@@ -1,0 +1,21 @@
+{
+  "name": "excercises",
+  "version": "1.0.0",
+  "description": "fullstack open part 9 exercices",
+  "main": "index.js",
+  "scripts": {
+    "ts-node": "ts-node",
+    "calculateBmi": "ts-node bmiCalculator.ts",
+    "calculateExercises": "ts-node exerciseCalculator.ts"
+  },
+  "author": "Dmitrii Roshkovan",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true
+  }
+}
