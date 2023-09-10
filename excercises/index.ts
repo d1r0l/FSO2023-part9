@@ -1,7 +1,9 @@
 import express = require('express');
 import bmiCalculator from './bmiCalculator';
+import bmiCalculator from './bmiCalculator';
 
 const app = express();
+const port = 3002;
 const port = 3002;
 
 app.get('/hello', (_req, res) => {

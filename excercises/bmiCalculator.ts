@@ -18,6 +18,21 @@ const parseArguments = (args: any): calculateBmi => {
     throw new Error(
       'malformatted parameters: height cannot be zero or negative',
     );
+const parseArguments = (args: any): calculateBmi => {
+  if (!args.weight && !args.height)
+    throw new Error('malformatted parameters: weight & height is required');
+  if (!args.height)
+    throw new Error('malformatted parameters: height is required');
+  if (!args.weight)
+    throw new Error('malformatted parameters: weight is required');
+  if (args.weight <= 0)
+    throw new Error(
+      'malformatted parameters: weight cannot be zero or negative',
+    );
+  if (args.height <= 0)
+    throw new Error(
+      'malformatted parameters: height cannot be zero or negative',
+    );
 
   if (!isNaN(Number(args.height)) && !isNaN(Number(args.weight))) {
     return {
