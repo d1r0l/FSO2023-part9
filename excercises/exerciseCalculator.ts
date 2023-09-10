@@ -1,6 +1,3 @@
-const hoursPerDayArray: number[] = [3, 0, 2, 4.5, 0, 3, 1];
-const targetDailyHours: number = 2;
-
 interface calculateExcrercises {
   targetDailyHours: number;
   hoursPerDayArray: number[];
@@ -47,7 +44,7 @@ const exercisesCalculator = (
 
   const isTargetReached = averageDailyHours >= targetDailyHours;
 
-  const calculateRating = () => {
+  const calculateRating = (): 1 | 2 | 3 => {
     const ratio = averageDailyHours / targetDailyHours;
     switch (true) {
       case ratio >= 1 && ratio < 1.5:
@@ -56,12 +53,14 @@ const exercisesCalculator = (
         return 2;
       case ratio < 0.8 || ratio >= 2:
         return 3;
+      default:
+        throw new Error('rating calculation failed');
     }
   };
 
   const rating = calculateRating();
 
-  const createRatingDescription = (rating: 1 | 2 | 3) => {
+  const createRatingDescription = (rating: 1 | 2 | 3): string => {
     switch (rating) {
       case 1:
         return 'Excellent';

@@ -3,41 +3,27 @@ interface calculateBmi {
   weight: number;
 }
 
-const parseArguments = (args: any): calculateBmi => {
-  if (!args.weight && !args.height)
+const parseArguments = (args: unknown): calculateBmi => {
+  const bmiArgs = args as calculateBmi;
+  if (!bmiArgs.weight && !bmiArgs.height)
     throw new Error('malformatted parameters: weight & height is required');
-  if (!args.height)
+  if (!bmiArgs.height)
     throw new Error('malformatted parameters: height is required');
-  if (!args.weight)
+  if (!bmiArgs.weight)
     throw new Error('malformatted parameters: weight is required');
-  if (args.weight <= 0)
+  if (bmiArgs.weight <= 0)
     throw new Error(
       'malformatted parameters: weight cannot be zero or negative',
     );
-  if (args.height <= 0)
-    throw new Error(
-      'malformatted parameters: height cannot be zero or negative',
-    );
-const parseArguments = (args: any): calculateBmi => {
-  if (!args.weight && !args.height)
-    throw new Error('malformatted parameters: weight & height is required');
-  if (!args.height)
-    throw new Error('malformatted parameters: height is required');
-  if (!args.weight)
-    throw new Error('malformatted parameters: weight is required');
-  if (args.weight <= 0)
-    throw new Error(
-      'malformatted parameters: weight cannot be zero or negative',
-    );
-  if (args.height <= 0)
+  if (bmiArgs.height <= 0)
     throw new Error(
       'malformatted parameters: height cannot be zero or negative',
     );
 
-  if (!isNaN(Number(args.height)) && !isNaN(Number(args.weight))) {
+  if (!isNaN(Number(bmiArgs.height)) && !isNaN(Number(bmiArgs.weight))) {
     return {
-      height: Number(args.height),
-      weight: Number(args.weight),
+      height: Number(bmiArgs.height),
+      weight: Number(bmiArgs.weight),
     };
   } else {
     throw new Error('Provided values were not numbers!');

@@ -1,9 +1,7 @@
 import express = require('express');
 import bmiCalculator from './bmiCalculator';
-import bmiCalculator from './bmiCalculator';
 
 const app = express();
-const port = 3002;
 const port = 3002;
 
 app.get('/hello', (_req, res) => {
@@ -15,8 +13,11 @@ app.get('/bmi', (req, res) => {
     const bmiArgs = bmiCalculator.parseArguments(req.query);
     const bmiResult = bmiCalculator.calculate(bmiArgs);
     res.status(200).send({ ...bmiArgs, bmi: bmiResult });
-  } catch (error) {
-    res.status(400).send({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      const errorMessage: string = error.message;
+      res.status(400).send({ error: errorMessage });
+    }
   }
 });
 
