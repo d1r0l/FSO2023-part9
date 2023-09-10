@@ -5,28 +5,16 @@ interface calculateBmi {
 
 const parseArguments = (args: unknown): calculateBmi => {
   const bmiArgs = args as calculateBmi;
-  if (!bmiArgs.weight && !bmiArgs.height)
-    throw new Error('malformatted parameters: weight & height is required');
-  if (!bmiArgs.height)
-    throw new Error('malformatted parameters: height is required');
-  if (!bmiArgs.weight)
-    throw new Error('malformatted parameters: weight is required');
-  if (bmiArgs.weight <= 0)
-    throw new Error(
-      'malformatted parameters: weight cannot be zero or negative',
-    );
-  if (bmiArgs.height <= 0)
-    throw new Error(
-      'malformatted parameters: height cannot be zero or negative',
-    );
-
+  const error = new Error('malformatted parameters');
+  if (!bmiArgs.weight || !bmiArgs.height) throw error;
   if (!isNaN(Number(bmiArgs.height)) && !isNaN(Number(bmiArgs.weight))) {
+    if (bmiArgs.weight <= 0 || bmiArgs.height <= 0) throw error;
     return {
       height: Number(bmiArgs.height),
       weight: Number(bmiArgs.weight),
     };
   } else {
-    throw new Error('Provided values were not numbers!');
+    throw error;
   }
 };
 
