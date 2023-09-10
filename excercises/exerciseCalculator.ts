@@ -1,25 +1,7 @@
 interface calculateExcrercises {
-  targetDailyHours: number;
-  hoursPerDayArray: number[];
+  target: number;
+  daily_exercises: number[];
 }
-
-const parseArgumentsExcerciseCalculator = (
-  args: string[],
-): calculateExcrercises => {
-  if (args.length < 4) throw new Error('not enough arguments');
-  if (args.slice(2).every((arg) => !isNaN(Number(arg)))) {
-    if (!args.slice(3).every((arg) => Number(arg) <= 24))
-      throw new Error(
-        'quantity of training hours in a day must be between 0 and 24',
-      );
-    return {
-      targetDailyHours: Number(args[2]),
-      hoursPerDayArray: args.slice(3).map((arg) => Number(arg)),
-    };
-  } else {
-    throw new Error('provided values were not numbers!');
-  }
-};
 
 interface ExcerciseObject {
   periodLength: number;
@@ -31,21 +13,40 @@ interface ExcerciseObject {
   ratingDescription: string;
 }
 
-const exercisesCalculator = (
-  targetDailyHours: number,
-  hoursPerDayArray: number[],
-): ExcerciseObject => {
-  const trainingDays = hoursPerDayArray.filter(
+const parseArguments = (args: unknown): calculateExcrercises => {
+  const exercisesArgs = args as calculateExcrercises;
+  const errorWrongArgs = new Error('malformatted parameters');
+  if (!exercisesArgs.target || !exercisesArgs.daily_exercises)
+    throw new Error('parameters missing');
+  if (!isNaN(Number(exercisesArgs.target)) && Number(exercisesArgs.target) > 24)
+    throw errorWrongArgs;
+  if (exercisesArgs.daily_exercises.every((arg) => !isNaN(Number(arg)))) {
+    if (!exercisesArgs.daily_exercises.every((arg) => Number(arg) <= 24))
+      throw errorWrongArgs;
+    return {
+      target: Number(exercisesArgs.target),
+      daily_exercises: exercisesArgs.daily_exercises.map((arg) => Number(arg)),
+    };
+  } else {
+    throw errorWrongArgs;
+  }
+};
+
+const calculate = (args: calculateExcrercises): ExcerciseObject => {
+  const target = args.target;
+  const daily_exercises = args.daily_exercises;
+
+  const trainingDays = daily_exercises.filter(
     (dayHours) => dayHours !== 0,
   ).length;
 
   const averageDailyHours =
-    hoursPerDayArray.reduce((acc, cur) => acc + cur) / hoursPerDayArray.length;
+    daily_exercises.reduce((acc, cur) => acc + cur) / daily_exercises.length;
 
-  const isTargetReached = averageDailyHours >= targetDailyHours;
+  const isTargetReached = averageDailyHours >= target;
 
   const calculateRating = (): 1 | 2 | 3 => {
-    const ratio = averageDailyHours / targetDailyHours;
+    const ratio = averageDailyHours / target;
     switch (true) {
       case ratio >= 1 && ratio < 1.5:
         return 1;
@@ -74,28 +75,14 @@ const exercisesCalculator = (
   const ratingDescription = createRatingDescription(rating);
 
   return {
-    periodLength: hoursPerDayArray.length,
+    periodLength: daily_exercises.length,
     trainingDays: trainingDays,
     success: isTargetReached,
     rating: rating,
     ratingDescription: ratingDescription,
-    target: targetDailyHours,
+    target: target,
     average: averageDailyHours,
   };
 };
 
-try {
-  const parsedArgs = parseArgumentsExcerciseCalculator(process.argv);
-  console.log(
-    exercisesCalculator(
-      parsedArgs.targetDailyHours,
-      parsedArgs.hoursPerDayArray,
-    ),
-  );
-} catch (error: unknown) {
-  let errorMessage = 'Something went wrong: ';
-  if (error instanceof Error) {
-    errorMessage += error.message;
-  }
-  console.log(errorMessage);
-}
+export default { parseArguments, calculate };
