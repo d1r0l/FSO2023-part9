@@ -4,15 +4,27 @@ const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
 };
 
+const isDate = (date: string): boolean => {
+  return Boolean(Date.parse(date));
+};
+
+const isWeather = (param: string): param is Weather => {
+  return Object.values(Weather)
+    .map((v) => v.toString())
+    .includes(param);
+};
+
+const isVisibility = (param: string): param is Visibility => {
+  return Object.values(Visibility)
+    .map((v) => v.toString())
+    .includes(param);
+};
+
 const parseComment = (comment: unknown): string => {
   if (!comment || !isString(comment)) {
     throw new Error('Incorrect or missing comment');
   }
   return comment;
-};
-
-const isDate = (date: string): boolean => {
-  return Boolean(Date.parse(date));
 };
 
 const parseDate = (date: unknown): string => {
@@ -22,23 +34,11 @@ const parseDate = (date: unknown): string => {
   return date;
 };
 
-const isWeather = (param: string): param is Weather => {
-  return Object.values(Weather)
-    .map((v) => v.toString())
-    .includes(param);
-};
-
 const parseWeather = (weather: unknown): Weather => {
   if (!weather || !isString(weather) || !isWeather(weather)) {
     throw new Error('Incorrect or missing weather: ' + weather);
   }
   return weather;
-};
-
-const isVisibility = (param: string): param is Visibility => {
-  return Object.values(Visibility)
-    .map((v) => v.toString())
-    .includes(param);
 };
 
 const parseVisibility = (visibility: unknown): Visibility => {
