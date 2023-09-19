@@ -13,11 +13,23 @@ const App = (): React.JSX.Element => {
     return <h1>Diary entries</h1>
   }
 
+  // let timeout: NodeJS.Timeout
+
   const NewEntryForm = (): React.JSX.Element => {
     const [date, setDate] = useState<string>('')
     const [visibility, setVisibility] = useState<string>('')
     const [weather, setWeather] = useState<string>('')
     const [comment, setComment] = useState<string>('')
+    const [errorMessage, setErrorMessage] = useState<string>('')
+    const [errorVisible, setErrorVisible] = useState<boolean>(false)
+    const [timer, setTimer] = useState<NodeJS.Timeout>()
+
+    const popupError = (message: string) => {
+      clearTimeout(timer)
+      setErrorMessage(message)
+      setErrorVisible(true)
+      setTimer(setTimeout(() => setErrorVisible(false), 5000))
+    }
 
     const emptyForm = () => {
       setDate('')
@@ -34,43 +46,55 @@ const App = (): React.JSX.Element => {
         visibility: visibility
       }
       if (comment !== '') newEntry.comment = comment
-      const respondedEntry: DiaryEntry = await createDiaryEntry(newEntry)
-      setDiaries([...diaries, respondedEntry])
-      emptyForm()
+      try {
+        const respondedEntry: DiaryEntry = await createDiaryEntry(newEntry)
+        setDiaries([...diaries, respondedEntry])
+        emptyForm()
+      } catch (error) {
+        if (typeof error === 'string') {
+          popupError(error)
+        } else {
+          popupError('Something went wrong.')
+        }
+      }
     }
 
     return (
-      <form onSubmit={handleSubmit}>
-        {'date: '}
-        <input
-          type='text'
-          value={date}
-          onChange={e => setDate(e.target.value)}
-        />
-        <br />
-        {'visibility: '}
-        <input
-          type='text'
-          value={visibility}
-          onChange={e => setVisibility(e.target.value)}
-        />
-        <br />
-        {'weather: '}
-        <input
-          type='text'
-          value={weather}
-          onChange={e => setWeather(e.target.value)}
-        />
-        <br />
-        {'comment: '}
-        <input
-          type='text'
-          value={comment}
-          onChange={e => setComment(e.target.value)}
-        />
-        <br />
-        <button type='submit'> add </button>
-      </form>
+      <div>
+        <h2>Add new entry</h2>
+        {errorVisible && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        <form onSubmit={handleSubmit}>
+          {'date: '}
+          <input
+            type='text'
+            value={date}
+            onChange={e => setDate(e.target.value)}
+          />
+          <br />
+          {'visibility: '}
+          <input
+            type='text'
+            value={visibility}
+            onChange={e => setVisibility(e.target.value)}
+          />
+          <br />
+          {'weather: '}
+          <input
+            type='text'
+            value={weather}
+            onChange={e => setWeather(e.target.value)}
+          />
+          <br />
+          {'comment: '}
+          <input
+            type='text'
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+          />
+          <br />
+          <button type='submit'> add </button>
+        </form>
+      </div>
     )
   }
 

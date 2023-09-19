@@ -13,4 +13,16 @@ export const createDiaryEntry = (newEntry: NewDiaryEntry) => {
   return axios
     .post<DiaryEntry>(`${baseUrl}/diaries`, newEntry)
     .then(response => response.data)
+    .catch(error => {
+      if (
+        axios.isAxiosError(error) &&
+        error.response &&
+        error.response.data &&
+        typeof error.response.data === 'string'
+      ) {
+        throw error.response.data
+      } else {
+        throw error
+      }
+    })
 }
