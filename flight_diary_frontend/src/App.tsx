@@ -1,16 +1,77 @@
 import { useState, useEffect } from 'react'
-import { DiaryEntry } from './types'
-import { getDiaries } from './services/diaryService'
+import { DiaryEntry, NewDiaryEntry } from './types'
+import { getDiaryEntries, createDiaryEntry } from './services/diaryService'
 
 const App = (): React.JSX.Element => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([])
 
   useEffect(() => {
-    getDiaries().then(response => setDiaries(response))
+    getDiaryEntries().then(response => setDiaries(response))
   }, [])
 
   const Header = (): React.JSX.Element => {
     return <h1>Diary entries</h1>
+  }
+
+  const NewEntryForm = (): React.JSX.Element => {
+    const [date, setDate] = useState<string>('')
+    const [visibility, setVisibility] = useState<string>('')
+    const [weather, setWeather] = useState<string>('')
+    const [comment, setComment] = useState<string>('')
+
+    const emptyForm = () => {
+      setDate('')
+      setVisibility('')
+      setWeather('')
+      setComment('')
+    }
+
+    const handleSubmit = async (event: React.SyntheticEvent) => {
+      event.preventDefault()
+      const newEntry: NewDiaryEntry = {
+        date: date,
+        weather: weather,
+        visibility: visibility
+      }
+      if (comment !== '') newEntry.comment = comment
+      const respondedEntry: DiaryEntry = await createDiaryEntry(newEntry)
+      setDiaries([...diaries, respondedEntry])
+      emptyForm()
+    }
+
+    return (
+      <form onSubmit={handleSubmit}>
+        {'date: '}
+        <input
+          type='text'
+          value={date}
+          onChange={e => setDate(e.target.value)}
+        />
+        <br />
+        {'visibility: '}
+        <input
+          type='text'
+          value={visibility}
+          onChange={e => setVisibility(e.target.value)}
+        />
+        <br />
+        {'weather: '}
+        <input
+          type='text'
+          value={weather}
+          onChange={e => setWeather(e.target.value)}
+        />
+        <br />
+        {'comment: '}
+        <input
+          type='text'
+          value={comment}
+          onChange={e => setComment(e.target.value)}
+        />
+        <br />
+        <button type='submit'> add </button>
+      </form>
+    )
   }
 
   const Diaries = ({
@@ -51,6 +112,7 @@ const App = (): React.JSX.Element => {
   return (
     <div>
       <Header />
+      <NewEntryForm />
       <Diaries diaries={diaries} />
     </div>
   )
