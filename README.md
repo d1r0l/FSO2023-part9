@@ -1,5 +1,9 @@
-# This repository contains results of exercises of part 9 of Full Stack Open 2023 performed by me
+# This repository contains results of excercises of part 9 of Full Stack Open 2023 performed by me
 
-## Folder "excercises" contains exercises 9.1=9.7
+## Folder "excercises" contains excercises 9.1=9.7
 
-## Folder "patientor" contains exercises 9.8-9.xx
+## Folder "patientor" contains excercises 9.8-9.13
+
+## Folder "my-excercise-app" contains excercises 9.14-9.15
+
+## Folder "flight_diary_frontend" contains excercises 9.16-

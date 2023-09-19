@@ -4,6 +4,10 @@ import toNewDiaryEntry from '../utils';
 
 const router = express.Router();
 
+router.get('/', (_req, res) => {
+  res.send(diaryService.getEntries());
+});
+
 router.get('/:id', (req, res) => {
   const diary = diaryService.findById(Number(req.params.id));
 
@@ -12,10 +16,6 @@ router.get('/:id', (req, res) => {
   } else {
     res.sendStatus(404);
   }
-});
-
-router.get('/', (_req, res) => {
-  res.send(diaryService.getNonSensitiveEntries());
 });
 
 router.post('/', (req, res) => {
