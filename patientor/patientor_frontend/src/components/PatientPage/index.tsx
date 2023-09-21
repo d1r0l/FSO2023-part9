@@ -3,6 +3,7 @@ import { Typography } from '@mui/material'
 import patientService from '../../services/patients'
 import { Patient } from '../../types'
 import { useParams } from 'react-router-dom'
+import EntryDetails from './EntryDetails'
 
 const PatientPage = (): React.JSX.Element => {
   const [patient, setPatient] = useState<Patient>()
@@ -31,24 +32,30 @@ const PatientPage = (): React.JSX.Element => {
   else {
     return (
       <div>
-        <Typography variant='h4' style={{ marginTop: '0.5em' }} gutterBottom>
+        <Typography variant='h4' style={{ marginTop: '1em' }} gutterBottom>
           {patient.name}{' '}
           <span style={{ fontFamily: 'Segoe UI Emoji' }}>
             {genderSymbol(patient.gender)}
           </span>
         </Typography>
-        <Typography variant='h5'>
+        <Typography variant='body1'>
           {'SSN: '}
           {patient.ssn}
         </Typography>
-        <Typography variant='h5'>
+        <Typography variant='body1'>
           {'Date of birth: '}
           {patient.dateOfBirth}
         </Typography>
-        <Typography variant='h5'>
+        <Typography variant='body1'>
           {'Occupation: '}
           {patient.occupation}
         </Typography>
+        <Typography variant='h6' style={{ marginTop: '1em' }} gutterBottom>
+          {patient.entries.length > 0 ? 'Entries' : 'No entries'}
+        </Typography>
+        {patient.entries.map((entry, index) => (
+          <EntryDetails key={index} entry={entry} />
+        ))}
       </div>
     )
   }
