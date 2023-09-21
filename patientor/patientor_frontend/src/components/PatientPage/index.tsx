@@ -4,6 +4,7 @@ import patientService from '../../services/patients'
 import { Patient } from '../../types'
 import { useParams } from 'react-router-dom'
 import EntryDetails from './EntryDetails'
+import GenderIcon from './GenderIcon'
 
 const PatientPage = (): React.JSX.Element => {
   const [patient, setPatient] = useState<Patient>()
@@ -17,26 +18,12 @@ const PatientPage = (): React.JSX.Element => {
     }
   }, [patientId])
 
-  const genderSymbol = (gender: string) => {
-    switch (gender) {
-      case 'male':
-        return <>&#9794;</>
-      case 'female':
-        return <>&#9792;</>
-      default:
-        return <>&#9895;</>
-    }
-  }
-
   if (!patient) return <div />
   else {
     return (
       <div>
         <Typography variant='h4' style={{ marginTop: '1em' }} gutterBottom>
-          {patient.name}{' '}
-          <span style={{ fontFamily: 'Segoe UI Emoji' }}>
-            {genderSymbol(patient.gender)}
-          </span>
+          {patient.name} <GenderIcon gender={patient.gender} />
         </Typography>
         <Typography variant='body1'>
           {'SSN: '}

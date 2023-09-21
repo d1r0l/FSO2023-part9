@@ -1,7 +1,15 @@
 import { Typography } from '@mui/material'
-import { Entry } from '../../types'
+import { Diagnosis, Entry } from '../../types'
+import { useState, useEffect } from 'react'
+import diagnosesService from '../../services/diagnoses'
 
 const EntryDetails = ({ entry }: { entry: Entry }) => {
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
+
+  useEffect(() => {
+    void diagnosesService.getAll().then(diagnoses => setDiagnoses(diagnoses))
+  }, [entry])
+
   return (
     <div>
       <Typography variant='body1' gutterBottom>
@@ -12,7 +20,8 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
           entry.diagnosisCodes.map(diagnosisCode => (
             <li>
               <Typography variant='body1' key={diagnosisCode}>
-                {diagnosisCode}
+                {diagnosisCode}{' '}
+                {diagnoses.find(d => d.code === diagnosisCode)?.name}
               </Typography>
             </li>
           ))}
