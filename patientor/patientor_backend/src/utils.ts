@@ -30,7 +30,7 @@ const parseName = (name: unknown): string => {
 
 const parseDateOfBirth = (date: unknown): string => {
   if (!date || !isString(date) || !isDate(date)) {
-    throw new Error('Incorrect or missing dateOfBirth: ' + date);
+    throw new Error('Incorrect or missing date of birth: ' + date);
   } else return date;
 };
 
@@ -67,8 +67,9 @@ const parseNewPatient = (data: unknown): NewPatient => {
       ssn: parseSsn(data.ssn),
       gender: parseGender(data.gender),
       occupation: parseOccupation(data.occupation),
+      entries: [],
     };
-  } else throw new Error('Incorrect fields: some data is missing');
+  } else throw new Error('Incorrect or missing fields');
 };
 
 export default parseNewPatient;
