@@ -3,11 +3,11 @@ import { Gender } from '../../types'
 
 const GenderIcon = ({ gender }: { gender: Gender }) => {
   switch (gender) {
-    case 'male':
+    case Gender.Male:
       return <Male />
-    case 'female':
+    case Gender.Female:
       return <Female />
-    case 'other':
+    case Gender.Other:
       return <Transgender />
     default:
       return null
