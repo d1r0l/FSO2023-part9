@@ -1,7 +1,9 @@
-import { Typography } from '@mui/material'
+import { Paper, Typography } from '@mui/material'
 import { Diagnosis, Entry } from '../../types'
 import { useState, useEffect } from 'react'
 import diagnosesService from '../../services/diagnoses'
+import EntryIcon from './EntryIcon'
+import HealthCheckRatingIcon from './HealthCheckRatingIcon'
 
 const EntryDetails = ({ entry }: { entry: Entry }) => {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
@@ -11,13 +13,21 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
   }, [entry])
 
   return (
-    <div>
-      <Typography variant='body1' gutterBottom>
-        {entry.date} {entry.description}
+    <Paper variant='outlined' sx={{ padding: 2, border: 2 }}>
+      <Typography variant='body1'>
+        {entry.date + ' '}
+        <EntryIcon type={entry.type} />
+        {'employerName' in entry && ' ' + entry.employerName}
       </Typography>
-      <ul>
-        {entry.diagnosisCodes &&
-          entry.diagnosisCodes.map(diagnosisCode => (
+      <Typography variant='body1'>
+        {'healthCheckRating' in entry && (
+          <HealthCheckRatingIcon healthCheckRating={entry.healthCheckRating} />
+        )}
+        {' ' + entry.description}
+      </Typography>
+      {entry.diagnosisCodes && (
+        <ul>
+          {entry.diagnosisCodes.map(diagnosisCode => (
             <li>
               <Typography variant='body1' key={diagnosisCode}>
                 {diagnosisCode}{' '}
@@ -25,8 +35,13 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
               </Typography>
             </li>
           ))}
-      </ul>
-    </div>
+        </ul>
+      )}
+      <Typography variant='body1'>
+        {'Diagnosed by: '}
+        {entry.specialist}
+      </Typography>
+    </Paper>
   )
 }
 

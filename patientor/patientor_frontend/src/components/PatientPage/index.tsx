@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import patientService from '../../services/patients'
 import { Patient } from '../../types'
 import { useParams } from 'react-router-dom'
@@ -40,9 +40,13 @@ const PatientPage = (): React.JSX.Element => {
         <Typography variant='h6' style={{ marginTop: '1em' }} gutterBottom>
           {patient.entries.length > 0 ? 'Entries' : 'No entries'}
         </Typography>
-        {patient.entries.map((entry, index) => (
-          <EntryDetails key={index} entry={entry} />
-        ))}
+        {patient.entries.length > 0 ? (
+          <Stack direction='column' spacing={2}>
+            {patient.entries.map((entry, index) => (
+              <EntryDetails key={index} entry={entry} />
+            ))}
+          </Stack>
+        ) : null}
       </div>
     )
   }
