@@ -29,4 +29,14 @@ router.post('/', (req, res) => {
   }
 });
 
+router.post('/:id/entries', (req, res) => {
+  try {
+    console.log(req.body);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(400).send({ error: error.message });
+    } else res.status(400).send('Something went wrong');
+  }
+});
+
 export default router;
