@@ -13,7 +13,7 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
   }, [entry])
 
   return (
-    <Paper variant='outlined' sx={{ padding: 2, border: 2 }}>
+    <Paper variant='outlined' sx={{ p: 2, border: 2 }}>
       <Typography variant='body1'>
         {entry.date + ' '}
         <EntryIcon type={entry.type} />
