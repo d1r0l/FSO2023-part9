@@ -28,8 +28,8 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
       {entry.diagnosisCodes && (
         <ul>
           {entry.diagnosisCodes.map(diagnosisCode => (
-            <li>
-              <Typography variant='body1' key={diagnosisCode}>
+            <li key={diagnosisCode}>
+              <Typography variant='body1'>
                 {diagnosisCode}{' '}
                 {diagnoses.find(d => d.code === diagnosisCode)?.name}
               </Typography>

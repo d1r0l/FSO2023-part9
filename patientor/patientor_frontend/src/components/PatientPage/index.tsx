@@ -4,8 +4,9 @@ import { Patient } from '../../types'
 import { useParams } from 'react-router-dom'
 import EntryList from './EntryList'
 import PatientInfo from './PatientInfo'
+import AddEntryForm from './AddEntryForm'
 
-const PatientPage = (): React.JSX.Element => {
+const PatientPage = () => {
   const [patient, setPatient] = useState<Patient>()
   let { patientId } = useParams()
 
@@ -22,6 +23,7 @@ const PatientPage = (): React.JSX.Element => {
     return (
       <div>
         <PatientInfo patient={patient} />
+        <AddEntryForm patient={patient} />
         <EntryList patient={patient} />
       </div>
     )
