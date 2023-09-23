@@ -49,7 +49,6 @@ const addEntry = (patientId: string, entry: unknown): Entry => {
         patientId === patient.id ? updatedPatient : patient
       );
       patients = updatedPatients;
-      console.log(patients.find((patient) => patient.id === patientId));
       return newEntry;
     } else {
       throw new Error('Incorrect id');
