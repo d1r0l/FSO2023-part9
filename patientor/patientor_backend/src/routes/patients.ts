@@ -1,5 +1,9 @@
 import express from 'express';
-import { getPatientById, getPatientsNoSsn } from '../services/patientService';
+import {
+  addEntry,
+  getPatientById,
+  getPatientsNoSsn,
+} from '../services/patientService';
 import { addPatient } from '../services/patientService';
 
 const router = express.Router();
@@ -31,7 +35,8 @@ router.post('/', (req, res) => {
 
 router.post('/:id/entries', (req, res) => {
   try {
-    console.log(req.body);
+    const addedEntry = addEntry(req.params.id, req.body);
+    res.status(200).send(addedEntry);
   } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(400).send({ error: error.message });
