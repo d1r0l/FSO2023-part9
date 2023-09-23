@@ -18,15 +18,16 @@ const PatientPage = () => {
     }
   }, [patientId])
 
-  if (!patient) return <div />
-  else {
+  if (patient) {
     return (
       <div>
         <PatientInfo patient={patient} />
-        <AddEntryForm patient={patient} />
+        <AddEntryForm patient={patient} setPatient={setPatient} />
         <EntryList patient={patient} />
       </div>
     )
+  } else {
+    return <div />
   }
 }
 

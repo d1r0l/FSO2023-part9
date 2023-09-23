@@ -3,7 +3,13 @@ import { Patient } from '../../types'
 import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material'
 import patientService from '../../services/patients'
 
-const AddEntryForm = ({ patient }: { patient: Patient }) => {
+const AddEntryForm = ({
+  patient,
+  setPatient
+}: {
+  patient: Patient
+  setPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>
+}) => {
   const [type, setType] = useState<string>('HealthCheck')
   const [description, setDescription] = useState<string>('')
   const [date, setDate] = useState<string>('')
@@ -39,7 +45,11 @@ const AddEntryForm = ({ patient }: { patient: Patient }) => {
     }
     try {
       const addedEntry = await patientService.createEntry(patient.id, newEntry)
-      patient.entries.push(addedEntry)
+      const updatedPatient = {
+        ...patient,
+        entries: patient.entries.concat(addedEntry)
+      }
+      setPatient(updatedPatient)
       clearFields()
     } catch (e: unknown) {
       console.error(e)
