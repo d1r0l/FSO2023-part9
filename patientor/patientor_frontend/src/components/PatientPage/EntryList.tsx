@@ -1,8 +1,14 @@
 import { Stack, Typography } from '@mui/material'
-import { Patient } from '../../types'
+import { Diagnosis, Patient } from '../../types'
 import EntryDetails from './EntryDetails'
 
-const EntryList = ({ patient }: { patient: Patient }) => {
+const EntryList = ({
+  diagnoses,
+  patient
+}: {
+  diagnoses: Diagnosis[]
+  patient: Patient
+}) => {
   return (
     <>
       <Typography variant='h6' style={{ marginTop: '1em' }} gutterBottom>
@@ -11,7 +17,7 @@ const EntryList = ({ patient }: { patient: Patient }) => {
       {patient.entries.length > 0 ? (
         <Stack direction='column' spacing={2}>
           {patient.entries.map((entry, index) => (
-            <EntryDetails key={index} entry={entry} />
+            <EntryDetails diagnoses={diagnoses} key={index} entry={entry} />
           ))}
         </Stack>
       ) : null}

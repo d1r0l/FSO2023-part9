@@ -1,17 +1,15 @@
 import { Paper, Typography } from '@mui/material'
 import { Diagnosis, Entry } from '../../types'
-import { useState, useEffect } from 'react'
-import diagnosesService from '../../services/diagnoses'
 import EntryIcon from './EntryIcon'
 import HealthCheckRatingIcon from './HealthCheckRatingIcon'
 
-const EntryDetails = ({ entry }: { entry: Entry }) => {
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
-
-  useEffect(() => {
-    void diagnosesService.getAll().then(diagnoses => setDiagnoses(diagnoses))
-  }, [entry])
-
+const EntryDetails = ({
+  diagnoses,
+  entry
+}: {
+  diagnoses: Diagnosis[]
+  entry: Entry
+}) => {
   return (
     <Paper variant='outlined' sx={{ p: 2, border: 2 }}>
       <Typography variant='body1'>

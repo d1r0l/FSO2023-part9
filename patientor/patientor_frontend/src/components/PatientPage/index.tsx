@@ -1,21 +1,27 @@
 import { useState, useEffect } from 'react'
-import patientService from '../../services/patients'
-import { Patient } from '../../types'
 import { useParams } from 'react-router-dom'
+import { Diagnosis, Patient } from '../../types'
+import patientService from '../../services/patients'
+import diagnosesService from '../../services/diagnoses'
 import EntryList from './EntryList'
 import PatientInfo from './PatientInfo'
 import AddEntryForm from './AddEntryForm'
 
 const PatientPage = () => {
   const [patient, setPatient] = useState<Patient>()
-  let { patientId } = useParams()
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
+  const { patientId } = useParams()
 
   useEffect(() => {
-    if (patientId) {
-      void patientService
-        .getById(patientId)
-        .then(patient => setPatient(patient))
+    const fetchPatientAndDiagnoses = async () => {
+      if (patientId) {
+        const patient = await patientService.getById(patientId)
+        void setPatient(patient)
+        const diagnoses = await diagnosesService.getAll()
+        void setDiagnoses(diagnoses)
+      }
     }
+    void fetchPatientAndDiagnoses()
   }, [patientId])
 
   if (patient) {
@@ -23,7 +29,7 @@ const PatientPage = () => {
       <div>
         <PatientInfo patient={patient} />
         <AddEntryForm patient={patient} setPatient={setPatient} />
-        <EntryList patient={patient} />
+        <EntryList diagnoses={diagnoses} patient={patient} />
       </div>
     )
   } else {
