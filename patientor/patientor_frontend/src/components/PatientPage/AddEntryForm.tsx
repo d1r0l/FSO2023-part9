@@ -6,6 +6,8 @@ import {
   Box,
   Button,
   Collapse,
+  FormControlLabel,
+  Switch,
   TextField,
   Typography
 } from '@mui/material'
@@ -23,8 +25,13 @@ const AddEntryForm = ({
   const [description, setDescription] = useState<string>('')
   const [date, setDate] = useState<string>('')
   const [specialist, setSpecialist] = useState<string>('')
-  const [healthCheckRating, setHealthCheckRating] = useState<string>('Healthy')
   const [diagnosisCodes, setDiagnosisCodes] = useState<string>('')
+
+  const [healthCheckRating, setHealthCheckRating] = useState<string>('Healthy')
+  const [employerName, setEmployerName] = useState<string>('')
+  const [sickLeave, setSickLeave] = useState<boolean>(false)
+  const [sickLeaveStartDate, setSickLeaveStartDate] = useState<string>('')
+  const [sickLeaveEndDate, setSickLeaveEndDate] = useState<string>('')
 
   const [timer, setTimer] = useState<NodeJS.Timeout>()
   const [showAlert, setShowAlert] = useState<boolean>(false)
@@ -33,7 +40,7 @@ const AddEntryForm = ({
     'success' | 'info' | 'warning' | 'error'
   >('success')
 
-  const entryTypes = ['HealthCheck']
+  const entryTypes = ['HealthCheck', 'OccupationalHealthcare', 'Hospital']
   const healthCheckRatingTypes = [
     'Healthy',
     'Low risk',
@@ -98,6 +105,132 @@ const AddEntryForm = ({
     clearFields()
   }
 
+  const BaseFields = (): React.JSX.Element => {
+    return (
+      <>
+        <Typography variant='h6' gutterBottom>
+          New entry:
+        </Typography>
+        <Autocomplete
+          disablePortal
+          options={entryTypes}
+          value={type}
+          onChange={(_, value: string) => setType(value)}
+          renderInput={params => (
+            <TextField {...params} label={'Entry type'} variant='standard' />
+          )}
+          disableClearable
+        />
+        <TextField
+          label='Description'
+          required
+          variant='standard'
+          sx={{ my: 1 }}
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+        />
+        <TextField
+          label='Date'
+          required
+          variant='standard'
+          sx={{ my: 1 }}
+          value={date}
+          onChange={e => setDate(e.target.value)}
+        />
+        <TextField
+          label='Specialist'
+          required
+          variant='standard'
+          sx={{ my: 1 }}
+          value={specialist}
+          onChange={e => setSpecialist(e.target.value)}
+        />
+        <TextField
+          label='Diagnosis Codes'
+          variant='standard'
+          sx={{ my: 1 }}
+          value={diagnosisCodes}
+          onChange={e => setDiagnosisCodes(e.target.value)}
+        />
+      </>
+    )
+  }
+
+  const OptionalFields = (): React.JSX.Element => {
+    switch (type) {
+      case 'HealthCheck':
+        return (
+          <>
+            <Autocomplete
+              disablePortal
+              options={healthCheckRatingTypes}
+              sx={{ my: 1 }}
+              value={healthCheckRating}
+              onChange={(_, value: string) => setHealthCheckRating(value)}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label={'Healthcheck Rating'}
+                  variant='standard'
+                />
+              )}
+              disableClearable
+            />
+          </>
+        )
+      case 'OccupationalHealthcare':
+        return (
+          <>
+            <TextField
+              label='Employer name'
+              required
+              variant='standard'
+              sx={{ my: 1 }}
+              value={employerName}
+              onChange={e => setEmployerName(e.target.value)}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={sickLeave}
+                  onChange={e => setSickLeave(e.target.checked)}
+                />
+              }
+              label='Add sick leave'
+            />
+            {sickLeave && (
+              <>
+                <TextField
+                  label='Sick leave start date'
+                  required={sickLeave}
+                  variant='standard'
+                  sx={{ my: 1 }}
+                  value={sickLeaveStartDate}
+                  onChange={e => setSickLeaveStartDate(e.target.value)}
+                />
+                <TextField
+                  label='Sick leave end date'
+                  required={sickLeave}
+                  variant='standard'
+                  sx={{ my: 1 }}
+                  value={sickLeaveEndDate}
+                  onChange={e => setSickLeaveEndDate(e.target.value)}
+                />
+              </>
+            )}
+          </>
+        )
+      case 'Hospital':
+        return (
+          <>
+            <p>something</p>
+          </>
+        )
+      default:
+        return <div />
+    }
+  }
+
   return (
     <>
       <Collapse in={showAlert}>
@@ -122,62 +255,8 @@ const AddEntryForm = ({
           flexDirection: 'column'
         }}
       >
-        <Typography variant='h6' gutterBottom>
-          New entry:
-        </Typography>
-        <Autocomplete
-          disablePortal
-          options={entryTypes}
-          value={type}
-          onChange={(_, value: string) => setType(value)}
-          renderInput={params => (
-            <TextField {...params} label={'Entry type'} variant='standard' />
-          )}
-          disableClearable
-        />
-        <TextField
-          label='Description'
-          variant='standard'
-          sx={{ my: 1 }}
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-        />
-        <TextField
-          label='Date'
-          variant='standard'
-          sx={{ my: 1 }}
-          value={date}
-          onChange={e => setDate(e.target.value)}
-        />
-        <TextField
-          label='Specialist'
-          variant='standard'
-          sx={{ my: 1 }}
-          value={specialist}
-          onChange={e => setSpecialist(e.target.value)}
-        />
-        <Autocomplete
-          disablePortal
-          options={healthCheckRatingTypes}
-          sx={{ my: 1 }}
-          value={healthCheckRating}
-          onChange={(_, value: string) => setHealthCheckRating(value)}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label={'Healthcheck Rating'}
-              variant='standard'
-            />
-          )}
-          disableClearable
-        />
-        <TextField
-          label='Diagnosis Codes'
-          variant='standard'
-          sx={{ my: 1 }}
-          value={diagnosisCodes}
-          onChange={e => setDiagnosisCodes(e.target.value)}
-        />
+        <BaseFields />
+        <OptionalFields />
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
           <Button variant='contained' type='reset' color='error'>
             Reset
