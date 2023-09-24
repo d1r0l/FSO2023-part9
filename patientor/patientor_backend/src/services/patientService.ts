@@ -3,7 +3,7 @@ import patientsData from '../../data/patients';
 import { parseNewEntry, parseNewPatient } from '../utils';
 import { v1 as uuid } from 'uuid';
 
-let patients = patientsData;
+const patients = patientsData;
 
 const getPatients = (): Patient[] => {
   return patients;
@@ -41,14 +41,9 @@ const addEntry = (patientId: string, entry: unknown): Entry => {
     if (selectedPatient) {
       const newEntry = parseNewEntry(entry) as Entry;
       newEntry.id = uuid();
-      const updatedPatient = {
-        ...selectedPatient,
-        entries: selectedPatient.entries.concat(newEntry),
-      } as Patient;
-      const updatedPatients = patients.map((patient) =>
-        patientId === patient.id ? updatedPatient : patient
+      void patients.forEach((patient) =>
+        patientId === patient.id ? patient.entries.push(newEntry) : patient
       );
-      patients = updatedPatients;
       return newEntry;
     } else {
       throw new Error('Incorrect id');
