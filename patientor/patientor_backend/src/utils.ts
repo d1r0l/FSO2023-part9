@@ -86,7 +86,7 @@ const parseDescription = (name: unknown): string => {
 
 const parseDate = (date: unknown): string => {
   if (!date || !isString(date) || !isDate(date)) {
-    throw new Error('Incorrect or missing date: ' + date);
+    throw new Error('Incorrect or missing date');
   } else return date;
 };
 
@@ -100,7 +100,9 @@ const parseDiagnosisCodes = (object: unknown): Array<Diagnosis['code']> => {
   if (!object || typeof object !== 'object' || !('diagnosisCodes' in object)) {
     return [] as Array<Diagnosis['code']>;
   }
-  return object.diagnosisCodes as Array<Diagnosis['code']>;
+  if (isString(object.diagnosisCodes)) {
+    return object.diagnosisCodes.split(' ');
+  } else throw new Error('Incorrect or missing diagnosisCodes');
 };
 
 const parseEntryType = (type: unknown): EntryWithoutId['type'] => {
