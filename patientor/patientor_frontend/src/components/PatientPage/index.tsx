@@ -16,8 +16,8 @@ const PatientPage = () => {
     const fetchPatientAndDiagnoses = async () => {
       if (patientId) {
         const patient = await patientService.getById(patientId)
-        void setPatient(patient)
         const diagnoses = await diagnosesService.getAll()
+        void setPatient(patient)
         void setDiagnoses(diagnoses)
       }
     }
