@@ -16,12 +16,6 @@ const EntryDetails = ({
         {entry.date + ' '}
         <EntryIcon type={entry.type} />
         {'employerName' in entry && ' ' + entry.employerName}
-        {'sickLeave' in entry &&
-          entry.sickLeave &&
-          'Sick leave ' +
-            entry.sickLeave.startDate +
-            ' - ' +
-            entry.sickLeave.endDate}
       </Typography>
       <Typography variant='body1'>
         {'healthCheckRating' in entry && (

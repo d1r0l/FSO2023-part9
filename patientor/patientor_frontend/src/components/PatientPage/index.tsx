@@ -28,7 +28,11 @@ const PatientPage = () => {
     return (
       <div>
         <PatientInfo patient={patient} />
-        <AddEntryForm patient={patient} setPatient={setPatient} />
+        <AddEntryForm
+          patient={patient}
+          setPatient={setPatient}
+          diagnoses={diagnoses}
+        />
         <EntryList diagnoses={diagnoses} patient={patient} />
       </div>
     )

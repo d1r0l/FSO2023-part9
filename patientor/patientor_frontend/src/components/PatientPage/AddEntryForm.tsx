@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { Patient } from '../../types'
+import { Diagnosis, Patient } from '../../types'
 import {
   Alert,
   Autocomplete,
   Box,
   Button,
   Collapse,
+  FormControl,
   FormControlLabel,
-  // Input,
-  // InputLabel,
+  InputLabel,
+  MenuItem,
+  Select,
   Switch,
   TextField,
   Typography
@@ -51,7 +53,6 @@ const StyledDatePicker = ({
   value: string
   setValue: React.Dispatch<React.SetStateAction<string>>
 }) => {
-  console.log('rerender')
   return (
     <>
       <DatePicker
@@ -117,10 +118,12 @@ const StyledSwitch = ({
 
 const AddEntryForm = ({
   patient,
-  setPatient
+  setPatient,
+  diagnoses
 }: {
   patient: Patient
   setPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>
+  diagnoses: Diagnosis[]
 }) => {
   // Base entry values
   const entryTypes = ['HealthCheck', 'OccupationalHealthcare', 'Hospital']
@@ -128,7 +131,7 @@ const AddEntryForm = ({
   const [description, setDescription] = useState<string>('')
   const [date, setDate] = useState<string>('')
   const [specialist, setSpecialist] = useState<string>('')
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string>('')
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([])
 
   // HealthCheck entry values
   const [healthCheckRating, setHealthCheckRating] = useState<string>('Healthy')
@@ -177,7 +180,7 @@ const AddEntryForm = ({
     setDescription('')
     setDate('')
     setSpecialist('')
-    setDiagnosisCodes('')
+    setDiagnosisCodes([])
     setHealthCheckRating('Healthy')
     setEmployerName('')
     setSickLeave(false)
@@ -306,12 +309,32 @@ const AddEntryForm = ({
           value={specialist}
           setValue={setSpecialist}
         />
-        <StyledTextField
-          required
-          label='Diagnosis Codes'
-          value={diagnosisCodes}
-          setValue={setDiagnosisCodes}
-        />
+        <FormControl sx={{ maxWidth: '100%' }}>
+          <InputLabel id='diagnosis-codes-label' variant='standard'>
+            Diagnosis codes
+          </InputLabel>
+          <Select
+            labelId='diagnosis-codes-label'
+            variant='standard'
+            multiple
+            value={diagnosisCodes}
+            onChange={e => {
+              console.log(diagnosisCodes)
+              typeof e.target.value === 'string'
+                ? setDiagnosisCodes(e.target.value.split(','))
+                : setDiagnosisCodes(e.target.value)
+            }}
+          >
+            {diagnoses.map(diagnosis => (
+              <MenuItem
+                key={diagnoses.indexOf(diagnosis)}
+                value={diagnosis.code}
+              >
+                {diagnosis.code + ' ' + diagnosis.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         {type === 'HealthCheck' && (
           <>
             <StyledAutocomplete
