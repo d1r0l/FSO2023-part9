@@ -16,6 +16,12 @@ const EntryDetails = ({
         {entry.date + ' '}
         <EntryIcon type={entry.type} />
         {'employerName' in entry && ' ' + entry.employerName}
+        {'sickLeave' in entry &&
+          entry.sickLeave &&
+          'Sick leave ' +
+            entry.sickLeave.startDate +
+            ' - ' +
+            entry.sickLeave.endDate}
       </Typography>
       <Typography variant='body1'>
         {'healthCheckRating' in entry && (
@@ -34,6 +40,22 @@ const EntryDetails = ({
             </li>
           ))}
         </ul>
+      )}
+      {'sickLeave' in entry && entry.sickLeave && (
+        <Typography variant='body1'>
+          {'Sick leave: '}
+          {entry.sickLeave.startDate}
+          {' - '}
+          {entry.sickLeave.endDate}
+        </Typography>
+      )}
+      {'discharge' in entry && entry.discharge && (
+        <Typography variant='body1'>
+          {'Discharge date: '}
+          {entry.discharge.date}
+          {', criteria: '}
+          {entry.discharge.criteria}
+        </Typography>
       )}
       <Typography variant='body1'>
         {'Diagnosed by: '}
