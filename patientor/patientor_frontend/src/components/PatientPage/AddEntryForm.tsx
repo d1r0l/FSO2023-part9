@@ -7,12 +7,15 @@ import {
   Button,
   Collapse,
   FormControlLabel,
+  // Input,
+  // InputLabel,
   Switch,
   TextField,
   Typography
 } from '@mui/material'
 import patientService from '../../services/patients'
 import { AxiosError } from 'axios'
+import { DatePicker } from '@mui/x-date-pickers'
 
 const StyledTextField = ({
   required,
@@ -34,6 +37,36 @@ const StyledTextField = ({
       value={value}
       onChange={e => setValue(e.target.value)}
     />
+  )
+}
+
+const StyledDatePicker = ({
+  required,
+  label,
+  value,
+  setValue
+}: {
+  required: boolean
+  label: string
+  value: string
+  setValue: React.Dispatch<React.SetStateAction<string>>
+}) => {
+  console.log('rerender')
+  return (
+    <>
+      <DatePicker
+        slotProps={{
+          textField: {
+            variant: 'standard',
+            required: required,
+            label: label,
+            error: false
+          }
+        }}
+        value={value}
+        onChange={newValue => (newValue ? setValue(newValue) : null)}
+      />
+    </>
   )
 }
 
@@ -261,7 +294,7 @@ const AddEntryForm = ({
           value={description}
           setValue={setDescription}
         />
-        <StyledTextField
+        <StyledDatePicker
           required
           label='Date'
           value={date}
@@ -304,13 +337,13 @@ const AddEntryForm = ({
             />
             {sickLeave && (
               <>
-                <StyledTextField
+                <StyledDatePicker
                   required={sickLeave}
                   label='Sick leave start date'
                   value={sickLeaveStartDate}
                   setValue={setSickLeaveStartDate}
                 />
-                <StyledTextField
+                <StyledDatePicker
                   required={sickLeave}
                   label='Sick leave end date'
                   value={sickLeaveEndDate}
@@ -322,7 +355,7 @@ const AddEntryForm = ({
         )}
         {type === 'Hospital' && (
           <>
-            <StyledTextField
+            <StyledDatePicker
               required
               label='Discharge date'
               value={dischargeDate}
