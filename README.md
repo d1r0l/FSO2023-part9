@@ -1,6 +1,6 @@
 # This repository contains results of excercises of part 9 of Full Stack Open 2023 performed by me
 
-## Folder "excercises" contains excercises 9.1=9.7
+## Folder "excercises" contains excercises 9.1-9.7
 
 ## Folder "patientor" contains excercises 9.8-9.13 and 9.20-29
 
