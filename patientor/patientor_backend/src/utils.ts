@@ -127,13 +127,13 @@ const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
   } else {
     switch (rating) {
       case 'Healthy':
-        return HealthCheckRating.Healthy;
+        return HealthCheckRating['Healthy'];
       case 'Low risk':
-        return HealthCheckRating.LowRisk;
+        return HealthCheckRating['Low risk'];
       case 'High risk':
-        return HealthCheckRating.HighRisk;
+        return HealthCheckRating['High risk'];
       case 'Critical risk':
-        return HealthCheckRating.CriticalRisk;
+        return HealthCheckRating['Critical risk'];
       default:
         throw new Error('Incorrect or missing rating');
     }

@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { Diagnosis, Patient } from '../../types'
+import { Diagnosis, EntryType, HealthCheckRating, Patient } from '../../types'
 import {
   Alert,
-  Autocomplete,
   Box,
   Button,
   Collapse,
@@ -17,6 +16,7 @@ import {
   Typography
 } from '@mui/material'
 import patientService from '../../services/patients'
+import dayjs, { Dayjs } from 'dayjs'
 import { AxiosError } from 'axios'
 import { DatePicker } from '@mui/x-date-pickers'
 
@@ -50,8 +50,8 @@ const StyledDatePicker = ({
 }: {
   required: boolean
   label: string
-  value: string
-  setValue: React.Dispatch<React.SetStateAction<string>>
+  value: Dayjs | null
+  setValue: React.Dispatch<React.SetStateAction<Dayjs | null>>
 }): React.JSX.Element => {
   return (
     <>
@@ -64,6 +64,7 @@ const StyledDatePicker = ({
             error: false
           }
         }}
+        format='YYYY-MM-DD'
         value={value}
         onChange={newValue => (newValue ? setValue(newValue) : null)}
       />
@@ -72,27 +73,40 @@ const StyledDatePicker = ({
 }
 
 const StyledAutocomplete = ({
+  required,
   label,
+  labelId,
   options,
   value,
   setValue
 }: {
+  required: boolean
   label: string
+  labelId: string
   options: string[]
   value: string
   setValue: React.Dispatch<React.SetStateAction<string>>
 }) => {
   return (
-    <Autocomplete
-      disablePortal
-      options={options}
-      value={value}
-      onChange={(_, value: string) => setValue(value)}
-      renderInput={params => (
-        <TextField {...params} label={label} variant='standard' />
-      )}
-      disableClearable
-    />
+    <FormControl>
+      <InputLabel id={`${labelId}-select-label`} variant='standard'>
+        {label}
+      </InputLabel>
+      <Select
+        required={required}
+        labelId='entry-type-select-label'
+        label={label}
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        variant='standard'
+      >
+        {options.map(option => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   )
 }
 
@@ -111,6 +125,7 @@ const StyledSwitch = ({
         <Switch checked={value} onChange={e => setValue(e.target.checked)} />
       }
       label={label}
+      sx={{ alignSelf: 'flex-start' }}
     />
   )
 }
@@ -125,30 +140,31 @@ const AddEntryForm = ({
   diagnoses: Diagnosis[]
 }): React.JSX.Element => {
   // Base entry values
-  const entryTypes = ['HealthCheck', 'OccupationalHealthcare', 'Hospital']
+  const entryTypes = Object.keys(EntryType).filter(key => isNaN(Number(key)))
   const [type, setType] = useState<string>('HealthCheck')
   const [description, setDescription] = useState<string>('')
-  const [date, setDate] = useState<string>('')
+  const [date, setDate] = useState<Dayjs | null>(null)
   const [specialist, setSpecialist] = useState<string>('')
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([])
 
   // HealthCheck entry values
-  const [healthCheckRating, setHealthCheckRating] = useState<string>('Healthy')
-  const healthCheckRatingTypes = [
-    'Healthy',
-    'Low risk',
-    'High risk',
-    'Critical risk'
-  ]
+  const healthCheckRatingOptions = Object.keys(HealthCheckRating).filter(key =>
+    isNaN(Number(key))
+  )
+  const [healthCheckRating, setHealthCheckRating] = useState<string>(
+    healthCheckRatingOptions[0]
+  )
 
   // OccupationalHealthcare entry values
   const [employerName, setEmployerName] = useState<string>('')
   const [sickLeave, setSickLeave] = useState<boolean>(false)
-  const [sickLeaveStartDate, setSickLeaveStartDate] = useState<string>('')
-  const [sickLeaveEndDate, setSickLeaveEndDate] = useState<string>('')
+  const [sickLeaveStartDate, setSickLeaveStartDate] = useState<Dayjs | null>(
+    null
+  )
+  const [sickLeaveEndDate, setSickLeaveEndDate] = useState<Dayjs | null>(null)
 
   // Hospital entry values
-  const [dischargeDate, setDischargeDate] = useState<string>('')
+  const [dischargeDate, setDischargeDate] = useState<Dayjs | null>(null)
   const [dischargeCriteria, setDischargeCriteria] = useState<string>('')
 
   // Alert values
@@ -177,15 +193,15 @@ const AddEntryForm = ({
 
   const clearFields = (): void => {
     setDescription('')
-    setDate('')
+    setDate(null)
     setSpecialist('')
     setDiagnosisCodes([])
-    setHealthCheckRating('Healthy')
+    setHealthCheckRating(healthCheckRatingOptions[0])
     setEmployerName('')
     setSickLeave(false)
-    setSickLeaveStartDate('')
-    setSickLeaveEndDate('')
-    setDischargeDate('')
+    setSickLeaveStartDate(null)
+    setSickLeaveEndDate(null)
+    setDischargeDate(null)
     setDischargeCriteria('')
   }
 
@@ -196,7 +212,7 @@ const AddEntryForm = ({
       const baseValues = {
         type,
         description,
-        date,
+        date: date ? dayjs(date).format('YYYY-MM-DD') : null,
         specialist,
         diagnosisCodes
       }
@@ -225,8 +241,12 @@ const AddEntryForm = ({
           return {
             ...baseValues,
             discharge: {
-              date: dischargeDate,
+              date: dischargeDate
+                ? dayjs(dischargeDate).format('YYYY-MM-DD')
+                : null,
               criteria: dischargeCriteria
+                ? dayjs(dischargeCriteria).format('YYYY-MM-DD')
+                : null
             }
           }
       }
@@ -282,7 +302,9 @@ const AddEntryForm = ({
           New entry:
         </Typography>
         <StyledAutocomplete
+          required
           label='Entry type'
+          labelId='entry-type-select-label'
           options={entryTypes}
           value={type}
           setValue={setType}
@@ -331,14 +353,14 @@ const AddEntryForm = ({
           </Select>
         </FormControl>
         {type === 'HealthCheck' && (
-          <>
-            <StyledAutocomplete
-              label='Healthcheck Rating'
-              options={healthCheckRatingTypes}
-              value={healthCheckRating}
-              setValue={setHealthCheckRating}
-            />
-          </>
+          <StyledAutocomplete
+            required
+            label='Health check rating'
+            labelId='health-check-rating-select-label'
+            options={healthCheckRatingOptions}
+            value={healthCheckRating}
+            setValue={setHealthCheckRating}
+          />
         )}
         {type === 'OccupationalHealthcare' && (
           <>
