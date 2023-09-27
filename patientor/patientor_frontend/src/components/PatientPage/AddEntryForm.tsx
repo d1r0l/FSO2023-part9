@@ -11,6 +11,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Switch,
   TextField,
   Typography
@@ -29,13 +30,12 @@ const StyledTextField = ({
   label: string
   value: string
   setValue: React.Dispatch<React.SetStateAction<string>>
-}) => {
+}): React.JSX.Element => {
   return (
     <TextField
       required={required}
       label={label}
       variant='standard'
-      sx={{ my: 1 }}
       value={value}
       onChange={e => setValue(e.target.value)}
     />
@@ -52,7 +52,7 @@ const StyledDatePicker = ({
   label: string
   value: string
   setValue: React.Dispatch<React.SetStateAction<string>>
-}) => {
+}): React.JSX.Element => {
   return (
     <>
       <DatePicker
@@ -86,7 +86,6 @@ const StyledAutocomplete = ({
     <Autocomplete
       disablePortal
       options={options}
-      sx={{ my: 1 }}
       value={value}
       onChange={(_, value: string) => setValue(value)}
       renderInput={params => (
@@ -105,7 +104,7 @@ const StyledSwitch = ({
   label: string
   value: boolean
   setValue: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
+}): React.JSX.Element => {
   return (
     <FormControlLabel
       control={
@@ -124,7 +123,7 @@ const AddEntryForm = ({
   patient: Patient
   setPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>
   diagnoses: Diagnosis[]
-}) => {
+}): React.JSX.Element => {
   // Base entry values
   const entryTypes = ['HealthCheck', 'OccupationalHealthcare', 'Hospital']
   const [type, setType] = useState<string>('HealthCheck')
@@ -163,7 +162,7 @@ const AddEntryForm = ({
   const createAlert = (
     text: string,
     severity: 'success' | 'info' | 'warning' | 'error'
-  ) => {
+  ): void => {
     clearTimeout(timer)
     setAlertText(text)
     setAlertSeverity(severity)
@@ -171,12 +170,12 @@ const AddEntryForm = ({
     setTimer(setTimeout(() => setShowAlert(false), 5000))
   }
 
-  const handleAlertClose = () => {
+  const handleAlertClose = (): void => {
     setShowAlert(false)
     clearTimeout(timer)
   }
 
-  const clearFields = () => {
+  const clearFields = (): void => {
     setDescription('')
     setDate('')
     setSpecialist('')
@@ -190,7 +189,7 @@ const AddEntryForm = ({
     setDischargeCriteria('')
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
 
     const createEntry = () => {
@@ -253,7 +252,7 @@ const AddEntryForm = ({
     }
   }
 
-  const handleReset = (e: React.FormEvent) => {
+  const handleReset = (e: React.FormEvent): void => {
     e.preventDefault()
     clearFields()
   }
@@ -261,18 +260,15 @@ const AddEntryForm = ({
   return (
     <>
       <Collapse in={showAlert}>
-        <Alert
-          onClose={() => handleAlertClose()}
-          sx={{ mt: 2 }}
-          severity={alertSeverity}
-        >
+        <Alert onClose={() => handleAlertClose()} severity={alertSeverity}>
           {alertText}
         </Alert>
       </Collapse>
-      <Box
+      <Stack
         component='form'
         onSubmit={handleSubmit}
         onReset={handleReset}
+        spacing={1}
         sx={{
           my: 2,
           p: 2,
@@ -319,7 +315,6 @@ const AddEntryForm = ({
             multiple
             value={diagnosisCodes}
             onChange={e => {
-              console.log(diagnosisCodes)
               typeof e.target.value === 'string'
                 ? setDiagnosisCodes(e.target.value.split(','))
                 : setDiagnosisCodes(e.target.value)
@@ -392,7 +387,7 @@ const AddEntryForm = ({
             />
           </>
         )}
-        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button variant='contained' type='reset' color='error'>
             Reset
           </Button>
@@ -400,7 +395,7 @@ const AddEntryForm = ({
             Submit
           </Button>
         </Box>
-      </Box>
+      </Stack>
     </>
   )
 }

@@ -100,9 +100,8 @@ const parseDiagnosisCodes = (object: unknown): Array<Diagnosis['code']> => {
   if (!object || typeof object !== 'object' || !('diagnosisCodes' in object)) {
     return [] as Array<Diagnosis['code']>;
   }
-  if (isString(object.diagnosisCodes)) {
-    return object.diagnosisCodes.split(' ');
-  } else throw new Error('Incorrect or missing diagnosisCodes');
+
+  return object.diagnosisCodes as Array<Diagnosis['code']>;
 };
 
 const parseEntryType = (type: unknown): EntryWithoutId['type'] => {
